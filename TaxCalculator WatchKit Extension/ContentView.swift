@@ -16,9 +16,25 @@ struct ContentView: View {
         ["7", "8", "9", "×"],
         ["4", "5", "6", "-"],
         ["1", "2", "3", "+"],
-        ["0", ".", "TIP", "="]
+        ["0", ".", "$", "="]
     ]
 
+    private func decideLook(s: String) -> (color: Color, fontSize: CGFloat, fontColor: Color) {
+        switch s {
+        case "AC", "%":
+            return (Color(UIColor.lightGray), 15, Color.black)
+        case "±":
+            return (Color(UIColor.lightGray), 20, Color.black)
+        case "÷", "×", "-", "+", "=":
+            return (Color.orange, 24, Color.white)
+        case "$":
+            return (Color.orange, 18, Color.white)
+        case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".":
+            return (Color(UIColor.darkGray), 18, Color.white)
+        default:
+            return (Color(UIColor.darkGray), 18, Color.white)
+        }
+    }
 
 
     var body: some View {
@@ -38,11 +54,11 @@ struct ContentView: View {
                                 print(button)
                             }) {
                                 Text(button)
-                                    .font(.system(size: 18))
-                                    .scaledToFill()
+                                    .font(.system(size: self.decideLook(s: button).fontSize))
+                                    .foregroundColor(self.decideLook(s: button).fontColor)
                             }
                             .frame(width: 37, height: 24)
-                            .background(Color.orange)
+                            .background(self.decideLook(s: button).color)
                             .cornerRadius(12)
                             .padding(1)
                         }
