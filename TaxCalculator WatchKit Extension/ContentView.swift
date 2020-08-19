@@ -8,41 +8,87 @@
 
 import SwiftUI
 
-struct ContentView: View {
+enum  CalculatorButton: String {
+    case zero, one, two, three, four, five, six, seven, eight, nine, period
+    case equals, plus, minus, multiply, divide, tax
+    case ac, plusminus, percent
 
-    @State var result: Int = 0
-    let buttons = [
-        ["AC", "±", "%", "÷"],
-        ["7", "8", "9", "×"],
-        ["4", "5", "6", "-"],
-        ["1", "2", "3", "+"],
-        ["0", ".", "$", "="]
-    ]
-
-    private func decideLook(s: String) -> (color: Color, fontSize: CGFloat, fontColor: Color) {
-        switch s {
-        case "AC", "%":
-            return (Color(UIColor.lightGray), 15, Color.black)
-        case "±":
-            return (Color(UIColor.lightGray), 20, Color.black)
-        case "÷", "×", "-", "+", "=":
-            return (Color.orange, 24, Color.white)
-        case "$":
-            return (Color.orange, 18, Color.white)
-        case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".":
-            return (Color(UIColor.darkGray), 18, Color.white)
-        default:
-            return (Color(UIColor.darkGray), 18, Color.white)
+    var title: String {
+        switch self {
+        case .zero: return "0"
+        case .one: return "1"
+        case .two: return "2"
+        case .three: return "3"
+        case .four: return "4"
+        case .five: return "5"
+        case .six: return "6"
+        case .seven: return "7"
+        case .eight: return "8"
+        case .nine: return "9"
+        case .period: return "."
+        case .equals: return "="
+        case .plus: return "+"
+        case .minus: return "-"
+        case .multiply: return "×"
+        case .divide: return "÷"
+        case .tax: return "$"
+        case .ac: return "AC"
+        case .plusminus: return "+/-"
+        case .percent: return "%"
         }
     }
 
+    var fontColor: Color {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .period, .equals, .plus, .minus, .multiply, .divide, .tax:
+            return Color.white
+        case .ac, .plusminus, .percent:
+            return Color.black
+        }
+    }
+
+    var fontSize: CGFloat {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .period:
+            return 18
+        case .equals, .plus, .minus, .multiply, .divide:
+            return 24
+        case .ac, .plusminus, .percent, .tax:
+            return 15
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .period:
+            return Color(UIColor.darkGray)
+        case .equals, .plus, .minus, .multiply, .divide, .tax:
+            return Color.orange
+        case .ac, .plusminus, .percent:
+            return Color(UIColor.lightGray)
+        }
+    }
+
+}
+
+struct ContentView: View {
+
+    @State var finalValue: String = "0"
+
+    let buttons: [[CalculatorButton]] = [
+        [.ac, .plusminus, .percent, .divide],
+        [.seven, .eight, .nine, .multiply],
+        [.four, .five, .six, .minus],
+        [.one, .two, .three, .plus],
+        [.zero, .period, .tax, .equals]
+    ]
 
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
                 Spacer()
                 HStack {
-                    Text("3746")
+                    Text(finalValue)
                         .font(.system(size: 25))
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
@@ -51,15 +97,15 @@ struct ContentView: View {
                     HStack(spacing: 0) {
                         ForEach(row, id: \.self) { button in
                             Button(action: {
-                                print(button)
+
                             }) {
-                                Text(button)
-                                    .font(.system(size: self.decideLook(s: button).fontSize))
-                                    .foregroundColor(self.decideLook(s: button).fontColor)
+                                Text(button.title)
+                                    .font(.system(size: button.fontSize))
+                                    .foregroundColor(button.fontColor)
                             }
-                            .frame(width: 37, height: 24)
-                            .background(self.decideLook(s: button).color)
-                            .cornerRadius(12)
+                            .frame(width: self.buttonWidth(button: button), height: self.buttonHeight(button: button))
+                            .background(button.backgroundColor)
+                            .cornerRadius(10)
                             .padding(1)
                         }
                     }
@@ -67,6 +113,19 @@ struct ContentView: View {
             }
         }
     }
+
+    private func buttonWidth(button: CalculatorButton) -> CGFloat {
+        let currentDevice = WKInterfaceDevice.current()
+        let bounds = currentDevice.screenBounds
+        return (bounds.width - 15) / 4
+    }
+
+    private func buttonHeight(button: CalculatorButton) -> CGFloat {
+        let currentDevice = WKInterfaceDevice.current()
+        let bounds = currentDevice.screenBounds
+        return (bounds.height ) / 8
+    }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
