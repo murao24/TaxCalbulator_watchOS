@@ -132,7 +132,6 @@ class GlobalEnvironment: ObservableObject {
         }
 
         displayValue(resultString: &resultString)
-
     }
 
     
@@ -153,7 +152,6 @@ class GlobalEnvironment: ObservableObject {
         }
 
         displayValue(resultString: &resultString)
-
     }
 
     private func displayValue(resultString: inout String?) {
