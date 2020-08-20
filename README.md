@@ -7,3 +7,4 @@
 - 開発言語 : Swift  
 - フレームワーク : SwiftUI  
 
+<img src="taxSimulator.gif" width=320px>
