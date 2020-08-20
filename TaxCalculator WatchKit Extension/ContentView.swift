@@ -45,13 +45,19 @@ struct ContentView: View {
 
 struct CalculatorButtonView: View {
 
+    @State private var scale: CGFloat = 1.0
     var button: CalculatorButton
+
 
     @EnvironmentObject var env: GlobalEnvironment
 
     var body: some View {
         Button(action: {
             self.env.receiveInput(button: self.button)
+            self.scale = 1.2
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {_ in
+                self.scale = 1.0
+            }
         }) {
             Text(button.title)
                 .font(.system(size: button.fontSize))
@@ -60,6 +66,7 @@ struct CalculatorButtonView: View {
         .frame(width: self.buttonWidth(), height: self.buttonHeight())
         .background(button.backgroundColor)
         .cornerRadius(15)
+        .scaleEffect(scale)
         .padding(1)
     }
 

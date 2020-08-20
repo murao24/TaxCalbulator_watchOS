@@ -10,7 +10,7 @@ import Foundation
 
 class GlobalEnvironment: ObservableObject {
 
-    @Published var display: String = "37436"
+    @Published var display: String = "0"
     private var calculateStatus: CalculateStatus = .none
     private var preVal: String = ""
     private var curVal: String = ""
@@ -40,6 +40,7 @@ class GlobalEnvironment: ObservableObject {
 
 
     private func handleFisrstNumberSelected(value: String) {
+
         switch value {
         case "0"..."9":
             preVal += value
@@ -62,8 +63,13 @@ class GlobalEnvironment: ObservableObject {
             calculateStatus = .divide
         case "+/-":
             calculateStatus = .reverse
+            anotherOperator()
         case "%":
             calculateStatus = .percent
+            anotherOperator()
+        case "$":
+            calculateStatus = .tax
+            anotherOperator()
         case "AC":
             clear()
         default:
@@ -87,6 +93,19 @@ class GlobalEnvironment: ObservableObject {
             }
         case "=":
             calculateResultNumber()
+            calculateStatus = .none
+        case "+":
+            calculateResultNumber()
+            calculateStatus = .plus
+        case "-":
+            calculateResultNumber()
+            calculateStatus = .minus
+        case "÷":
+            calculateResultNumber()
+            calculateStatus = .divide
+        case "×":
+            calculateResultNumber()
+            calculateStatus = .multiple
         case "AC":
             clear()
         default:
@@ -96,8 +115,7 @@ class GlobalEnvironment: ObservableObject {
 
     private func calculateResultNumber() {
 
-        let preValue = Double(preVal) ?? 0
-        let curValue = Double(curVal) ?? 0
+        guard let preValue = Double(preVal), let curValue = Double(curVal) else { return }
 
         var resultString: String?
         switch calculateStatus {
@@ -109,6 +127,20 @@ class GlobalEnvironment: ObservableObject {
             resultString = String(preValue * curValue)
         case .divide:
             resultString = String(preValue / curValue)
+        default:
+            break
+        }
+
+        displayValue(resultString: &resultString)
+    }
+
+    
+    private func anotherOperator() {
+
+        let preValue = Double(preVal) ?? 0
+
+        var resultString: String?
+        switch calculateStatus {
         case .reverse:
             resultString = String(preValue * -1)
         case .percent:
@@ -119,8 +151,18 @@ class GlobalEnvironment: ObservableObject {
             break
         }
 
+        displayValue(resultString: &resultString)
+    }
+
+    private func displayValue(resultString: inout String?) {
         if let result = resultString, result.hasPrefix("0") {
             resultString = result.replacingOccurrences(of: "0", with: "")
+        }
+
+        if let result = resultString {
+            if let result = Double(result) {
+                resultString = String(round(result * 1000) / 1000)
+            }
         }
 
         display = resultString ?? "0"
