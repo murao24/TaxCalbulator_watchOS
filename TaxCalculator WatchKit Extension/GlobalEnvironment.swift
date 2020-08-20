@@ -10,7 +10,7 @@ import Foundation
 
 class GlobalEnvironment: ObservableObject {
 
-    @Published var display: String = "37436"
+    @Published var display: String = "0"
     private var calculateStatus: CalculateStatus = .none
     private var preVal: String = ""
     private var curVal: String = ""
@@ -40,6 +40,7 @@ class GlobalEnvironment: ObservableObject {
 
 
     private func handleFisrstNumberSelected(value: String) {
+
         switch value {
         case "0"..."9":
             preVal += value
@@ -62,8 +63,13 @@ class GlobalEnvironment: ObservableObject {
             calculateStatus = .divide
         case "+/-":
             calculateStatus = .reverse
+            calculateResultNumber()
         case "%":
             calculateStatus = .percent
+            calculateResultNumber()
+        case "$":
+            calculateStatus = .tax
+            calculateResultNumber()
         case "AC":
             clear()
         default:
@@ -86,6 +92,28 @@ class GlobalEnvironment: ObservableObject {
                 display = curVal
             }
         case "=":
+            calculateResultNumber()
+            calculateStatus = .none
+        case "+":
+            calculateResultNumber()
+            calculateStatus = .plus
+        case "-":
+            calculateResultNumber()
+            calculateStatus = .minus
+        case "÷":
+            calculateResultNumber()
+            calculateStatus = .divide
+        case "×":
+            calculateResultNumber()
+            calculateStatus = .multiple
+        case "$":
+            calculateStatus = .tax
+            calculateResultNumber()
+        case "+/-":
+            calculateStatus = .reverse
+            calculateResultNumber()
+        case "%":
+            calculateStatus = .percent
             calculateResultNumber()
         case "AC":
             clear()
@@ -129,7 +157,6 @@ class GlobalEnvironment: ObservableObject {
 
         preVal += resultString ?? ""
         calculateStatus = .none
-
     }
 
     private func confirmIncludeDecimalPoint(numberString: String) -> Bool {
