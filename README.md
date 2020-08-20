@@ -5,6 +5,6 @@
 
 # 開発環境
 - 開発言語 : Swift  
-- フレームワーク : SwiftUI  
+- フレームワーク : SwiftUI, WatchKit
 
 <img src="taxSImulator.gif" width=320px>
