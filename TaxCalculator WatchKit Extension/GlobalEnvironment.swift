@@ -124,8 +124,7 @@ class GlobalEnvironment: ObservableObject {
 
     private func calculateResultNumber() {
 
-        let preValue = Double(preVal) ?? 0
-        let curValue = Double(curVal) ?? 0
+        guard let preValue = Double(preVal), let curValue = Double(curVal) else { return }
 
         var resultString: String?
         switch calculateStatus {
