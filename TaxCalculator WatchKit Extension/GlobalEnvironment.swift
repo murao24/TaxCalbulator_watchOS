@@ -63,13 +63,13 @@ class GlobalEnvironment: ObservableObject {
             calculateStatus = .divide
         case "+/-":
             calculateStatus = .reverse
-            calculateResultNumber()
+            anotherOperator()
         case "%":
             calculateStatus = .percent
-            calculateResultNumber()
+            anotherOperator()
         case "$":
             calculateStatus = .tax
-            calculateResultNumber()
+            anotherOperator()
         case "AC":
             clear()
         default:
@@ -106,15 +106,6 @@ class GlobalEnvironment: ObservableObject {
         case "×":
             calculateResultNumber()
             calculateStatus = .multiple
-        case "$":
-            calculateStatus = .tax
-            calculateResultNumber()
-        case "+/-":
-            calculateStatus = .reverse
-            calculateResultNumber()
-        case "%":
-            calculateStatus = .percent
-            calculateResultNumber()
         case "AC":
             clear()
         default:
@@ -136,6 +127,21 @@ class GlobalEnvironment: ObservableObject {
             resultString = String(preValue * curValue)
         case .divide:
             resultString = String(preValue / curValue)
+        default:
+            break
+        }
+
+        displayValue(resultString: &resultString)
+
+    }
+
+    
+    private func anotherOperator() {
+
+        let preValue = Double(preVal) ?? 0
+
+        var resultString: String?
+        switch calculateStatus {
         case .reverse:
             resultString = String(preValue * -1)
         case .percent:
@@ -146,8 +152,19 @@ class GlobalEnvironment: ObservableObject {
             break
         }
 
+        displayValue(resultString: &resultString)
+
+    }
+
+    private func displayValue(resultString: inout String?) {
         if let result = resultString, result.hasPrefix("0") {
             resultString = result.replacingOccurrences(of: "0", with: "")
+        }
+
+        if let result = resultString {
+            if let result = Double(result) {
+                resultString = String(round(result * 1000) / 1000)
+            }
         }
 
         display = resultString ?? "0"
@@ -156,6 +173,7 @@ class GlobalEnvironment: ObservableObject {
 
         preVal += resultString ?? ""
         calculateStatus = .none
+
     }
 
     private func confirmIncludeDecimalPoint(numberString: String) -> Bool {
